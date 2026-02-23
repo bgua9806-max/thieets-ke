@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Red Workspace - AI Ad Gen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Polyfill for process.env to prevent Uncaught ReferenceError in browser
+      if (typeof process === 'undefined') {
+        window.process = { env: { API_KEY: '' } };
+      }
+      
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+            },
+            colors: {
+              brand: {
+                red: '#FF2E2E', // Neon Red (Accent)
+                dark: '#050505', // Deep Dark BG
+                light: '#F3F4F6', // Modern Light BG
+                
+                // Dark Mode Colors
+                'panel-dark': 'rgba(0, 0, 0, 0.7)',
+                'input-dark': 'rgba(255, 255, 255, 0.05)',
+                
+                // Light Mode Colors
+                'panel-light': 'rgba(255, 255, 255, 0.8)',
+                'input-light': '#FFFFFF',
+              }
+            },
+            animation: {
+              'shimmer': 'shimmer 2s linear infinite',
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'text-shimmer': 'textShimmer 2.5s ease-in-out infinite alternate',
+              'pan-right': 'panRight 10s ease-in-out infinite alternate',
+              'zoom-in': 'zoomIn 10s ease-in-out infinite alternate',
+              'shake': 'shake 0.5s cubic-bezier(.36,.07,.19,.97) both',
+            },
+            keyframes: {
+              shimmer: {
+                '0%': { backgroundPosition: '-1000px 0' },
+                '100%': { backgroundPosition: '1000px 0' }
+              },
+              textShimmer: {
+                '0%': { opacity: '0.3' },
+                '100%': { opacity: '1' }
+              },
+              panRight: {
+                '0%': { transform: 'scale(1.1) translate(0%, 0%)' },
+                '100%': { transform: 'scale(1.1) translate(-5%, 0%)' }
+              },
+              zoomIn: {
+                '0%': { transform: 'scale(1)' },
+                '100%': { transform: 'scale(1.2)' }
+              },
+              shake: {
+                '10%, 90%': { transform: 'translate3d(-1px, 0, 0)' },
+                '20%, 80%': { transform: 'translate3d(2px, 0, 0)' },
+                '30%, 50%, 70%': { transform: 'translate3d(-4px, 0, 0)' },
+                '40%, 60%': { transform: 'translate3d(4px, 0, 0)' }
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+      body {
+        font-family: 'Inter', sans-serif;
+        overflow: hidden;
+      }
+
+      /* Custom Scrollbar - Adaptive */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent; 
+      }
+      
+      /* Dark Mode Scrollbar */
+      .dark ::-webkit-scrollbar-thumb {
+        background: #333; 
+        border-radius: 3px;
+      }
+      .dark ::-webkit-scrollbar-thumb:hover {
+        background: #FF2E2E; 
+      }
+
+      /* Light Mode Scrollbar */
+      .light ::-webkit-scrollbar-thumb {
+        background: #CBD5E1; 
+        border-radius: 3px;
+      }
+      .light ::-webkit-scrollbar-thumb:hover {
+        background: #94A3B8; 
+      }
+
+      /* Glassmorphism Utilities */
+      .glass-panel {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+      }
+      
+      /* Neon Glows - Only in Dark Mode typically, but refined for both */
+      .neon-shadow {
+        box-shadow: 0 0 20px rgba(255, 46, 46, 0.4);
+      }
+      
+      .text-glow {
+        text-shadow: 0 0 10px rgba(255, 46, 46, 0.5);
+      }
+
+      /* AI Text Loading Shimmer */
+      .ai-loading-bg {
+        background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        color: transparent !important;
+        border-radius: 6px;
+      }
+      
+      .light .ai-loading-bg {
+        background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+      }
+
+      .ai-loading-bg * {
+        opacity: 0;
+      }
+      
+      /* Motion Effects Classes */
+      .motion-pan { animation: panRight 10s ease-in-out infinite alternate; }
+      .motion-zoom { animation: zoomIn 10s ease-in-out infinite alternate; }
+      .motion-pulse { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+      .motion-shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "path": "https://esm.sh/path@^0.12.7",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "vite": "https://esm.sh/vite@^7.3.1"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
